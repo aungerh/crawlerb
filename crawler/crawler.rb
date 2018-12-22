@@ -4,19 +4,35 @@ require('fileutils')
 require('terminal-table')
 require_relative('../mixins')
 
+# Crawler visit sites:
+# 1. collect links.
+# 2. looks for the source script (in the same request).
+# 3. adds the link to the list of visited.
+# 4. it will ONLY crawl resources from the requested site, never related ones like google or facebook.
 class Crawler
-  # crawler visit sites:
-  # 1. collect links.
-  # 2. looks for the source script (in the same request).
-  # 3. adds the link to the list of visited.
-
-  # changes are written to state and persisted in the instance of crawler.
   attr_accessor :state
-
   attr_accessor :script
+  attr_accessor :domain
   attr_accessor :sources
   attr_accessor :visited
   attr_accessor :to_visit
+
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration)
+  end
+
+  class Configuration
+    attr_accessor :domain
+
+    def initialize
+      @domain = 'https://example.com'
+    end
+  end
 
   def initialize(script, sources)
     create_file("results/crawl_results", "txt")
@@ -25,6 +41,7 @@ class Crawler
     self.to_visit = []
     self.visited = []
     self.state = {}
+    self.domain = Crawler.configuration.domain
   end
 
   # TODO - get all the anchors on a website and add it to the `to_visit' list if they belong to the same domain.
