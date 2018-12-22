@@ -9,11 +9,11 @@ require_relative('../mixins')
 # 2. looks for the source script (in the same request).
 # 3. adds the link to the list of visited.
 # 4. it will ONLY crawl resources from the requested site, never related ones like google or facebook.
+
 class Crawler
   attr_accessor :state
   attr_accessor :script
   attr_accessor :domain
-  attr_accessor :sources
   attr_accessor :visited
   attr_accessor :to_visit
 
@@ -28,36 +28,43 @@ class Crawler
 
   class Configuration
     attr_accessor :domain
+    attr_accessor :script
 
     def initialize
       @domain = 'https://example.com'
+      @script = 'example.js'
     end
   end
 
-  def initialize(script, sources)
+  def initialize()
     create_file("results/crawl_results", "txt")
-    self.sources = sources
-    self.script = script
+    self.domain = Crawler.configuration.domain
+    self.script = Crawler.configuration.script
     self.to_visit = []
     self.visited = []
     self.state = {}
-    self.domain = Crawler.configuration.domain
   end
 
   # TODO - get all the anchors on a website and add it to the `to_visit' list if they belong to the same domain.
   def start()
-    self.sources.each do |src|
-      doc = Nokogiri::HTML(open(src))
-      has_script(doc) ? self.state[src] = [src, '✔'] : self.state[src] = [src, ' ']
-      get_link_from_doc(doc)
-      self.visited << src
-    end
-
+    run_entry_point()
+    # run_main_loop()
     write_results()
   end
 
-  # from a site source gets all the anchors.
-  def get_link_from_doc(doc)
+  def run_entry_point()
+    e = self.domain
+    doc = Nokogiri::HTML(open(e))
+    has_script(doc) ? self.state[e] = [e, '✔'] : self.state[e] = [e, ' ']
+    links(doc)
+    self.visited << e
+  end
+
+  def run_main_loop()
+    # TODO - implement
+  end
+
+  def links(doc)
     anchors = doc.css('a')
     anchors.each do |a|
       # TODO - sanitize: remove empty, recognize which typeof link we encountered.
