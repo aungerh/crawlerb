@@ -1,5 +1,4 @@
 +----------------------------------------------------------------------------------------------------+---+
-| https://www.biocompany.de                                                                          |   |
 | https://www.biocompany.de/jobs/                                                                    |   |
 | https://www.biocompany.de/kundenkarte/                                                             |   |
 | https://www.biocompany.de/bio-company-markt-finden/                                                | x |
@@ -43,13 +42,13 @@
 | https://www.biocompany.de/downloads/bio-company-angebote-berlin.pdf                                |   |
 | https://www.biocompany.de/downloads/bio-company-angebote-dresden.pdf                               |   |
 | https://www.biocompany.de/downloads/bio-company-angebote-hamburg.pdf                               |   |
-| https://www.biocompany.de/regionalitaet/partner/sandokan.html                                      |   |
-| https://www.biocompany.de/regionalitaet/partner/imkerei-mohr-und-mueller.html                      |   |
-| https://www.biocompany.de/regionalitaet/partner/speisegut.html                                     |   |
-| https://www.biocompany.de/regionalitaet/partner/proviant-berlin.html                               |   |
-| https://www.biocompany.de/regionalitaet/partner/baeckerei-beumer-und-lutum.html                    |   |
+| https://www.biocompany.de/regionalitaet/partner/hirschmark.html                                    |   |
 | https://www.biocompany.de/regionalitaet/partner/baeckerei-weichardt.html                           |   |
-| https://www.biocompany.de/regionalitaet/partner/bioland-hof-zielke.html                            |   |
+| https://www.biocompany.de/regionalitaet/partner/sandokan.html                                      |   |
+| https://www.biocompany.de/regionalitaet/partner/der-blumenstand.html                               |   |
+| https://www.biocompany.de/regionalitaet/partner/felicitas.html                                     |   |
+| https://www.biocompany.de/regionalitaet/partner/sprossenmanufaktur.html                            |   |
+| https://www.biocompany.de/regionalitaet/partner/wiener-brot.html                                   |   |
 | https://www.biocompany.de/rezepte/maronencremesuppe-mit-shiitake-bacon.html                        |   |
 | https://www.biocompany.de/rezepte/tafelspitz-mit-meerrettich-apfel-sauce.html                      |   |
 | https://www.biocompany.de/rezepte/vanille-zimtknoten-gefuellt-mit-cookie-dough.html                |   |

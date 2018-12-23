@@ -52,7 +52,6 @@ class Crawler
     self.state = {}
   end
 
-  # TODO - get all the anchors on a website and add it to the `to_visit' list if they belong to the same domain.
   def start()
     run_entry_point()
     run_main_loop()
@@ -60,36 +59,50 @@ class Crawler
   end
 
   def run_entry_point()
-    e = self.domain
-    doc = Nokogiri::HTML(open(e))
-    has_script(doc) ? self.state[e] = [e, 'x'] : self.state[e] = [e, '']
-    links(doc)
-    self.visited << e
+    domain = self.domain
+    doc = Nokogiri::HTML(open(domain))
+    # has_script(doc) ? self.state[domain] = [domain, 'x'] : self.state[domain] = [domain, '']
+    links(doc, domain)
   end
 
-  # TODO - error handling. 404 and all the like.
+  def visit(url)
+    self.visited << url
+  end
+
   def has_script(doc)
     return doc.css('script').collect{|s| s.values[1]}.compact.include?(self.script)
   end
 
-  def links(doc)
+  def links(doc, domain)
     anchors = doc.css('a')
     base = self.uri
 
     anchors.each do |a|
       path = a['href']
-      if path.include?('https') or path.include?('http') or path.empty? or path == '#' then
+      if is_not_relative(path) then
         self.external_refs << path
       else
-        path[0] == '/' ? base.path = path : base.path = "/#{path}"
+        path[0] == '/' ? base.path = URI::encode(path) : base.path = "/#{URI::encode(path)}"
         self.state[a['href']] = [base.to_s, ' ']
       end
     end
   end
 
+  def is_not_relative(path)
+    path.nil? or
+    path.empty? or
+    path.include?('https') or
+    path.include?('http') or
+    path.include?('–-') or
+    path.include?('#') or
+    path.include?('?')
+  end
+
   def run_main_loop()
     self.state.values.each do |v|
       doc = Nokogiri::HTML(open(v[0]))
+      # p "#{v[0]}: #{has_script(doc)}"
+      # links(doc, self.domain)
       has_script(doc) ? v[1] = 'x' : v[1] = ''
     end
   end
