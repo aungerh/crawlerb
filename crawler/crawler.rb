@@ -21,6 +21,7 @@ class Crawler
   attr_accessor :visited
   attr_accessor :to_visit
   attr_accessor :external_refs
+  attr_accessor :contains_script
 
   class << self
     attr_accessor :configuration
@@ -41,39 +42,25 @@ class Crawler
     end
   end
 
-  def initialize()
+  def initialize
     create_file("results/crawl_results", "txt")
+    self.uri = URI.parse(Crawler.configuration.domain)
     self.domain = Crawler.configuration.domain
     self.script = Crawler.configuration.script
-    self.uri = URI.parse(Crawler.configuration.domain)
+    self.contains_script = []
     self.external_refs = []
     self.to_visit = []
     self.visited = []
     self.state = {}
   end
 
-  def start()
-    run_entry_point()
-    run_main_loop()
+  def start
+    update_state(Nokogiri::HTML(open(self.domain)))
+    expand_links()
     write_results()
   end
 
-  def run_entry_point()
-    domain = self.domain
-    doc = Nokogiri::HTML(open(domain))
-    # has_script(doc) ? self.state[domain] = [domain, 'x'] : self.state[domain] = [domain, '']
-    links(doc, domain)
-  end
-
-  def visit(url)
-    self.visited << url
-  end
-
-  def has_script(doc)
-    return doc.css('script').collect{|s| s.values[1]}.compact.include?(self.script)
-  end
-
-  def links(doc, domain)
+  def update_state(doc)
     anchors = doc.css('a')
     base = self.uri
 
@@ -82,10 +69,14 @@ class Crawler
       if is_not_relative(path) then
         self.external_refs << path
       else
-        path[0] == '/' ? base.path = URI::encode(path) : base.path = "/#{URI::encode(path)}"
-        self.state[a['href']] = [base.to_s, ' ']
+        a[0] == '/' ? base.path = URI::encode(path) : base.path = "/#{URI::encode(path)}"
+        self.state[base.to_s] = [base.to_s, ' ']
       end
     end
+  end
+
+  def has_script(doc)
+    return doc.css('script').collect{|s| s.values[1]}.compact.include?(self.script)
   end
 
   def is_not_relative(path)
@@ -93,27 +84,25 @@ class Crawler
     path.empty? or
     path.include?('https') or
     path.include?('http') or
-    path.include?('–-') or
-    path.include?('#') or
     path.include?('?')
   end
 
-  def run_main_loop()
+  def expand_links
     self.state.values.each do |v|
       doc = Nokogiri::HTML(open(v[0]))
-      # p "#{v[0]}: #{has_script(doc)}"
-      # links(doc, self.domain)
-      has_script(doc) ? v[1] = 'x' : v[1] = ''
+      update_state(doc)
+      self.contains_script << v[0] if has_script(doc)
     end
   end
 
-  def write_results()
+  def write_results
     f = File.open("results/crawl_results.txt", "w+")
+    self.contains_script.each{|c| self.state[c][1] = 'x'}
     f.write(Terminal::Table.new :rows => self.state.values)
     f.close()
   end
 
-  def print_stats()
+  def print_stats
     # aims to provide stats for the crawler:
     # amount of visited urls
     # current url being crawled
