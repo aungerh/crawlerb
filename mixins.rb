@@ -11,7 +11,7 @@ def create_file(path, extension)
 end
 
 # urls that point out of the domain are not considered
-def is_not_relative(path)
+def invalid(path)
   path.nil? or
   path.empty? or
   path.include?('https') or

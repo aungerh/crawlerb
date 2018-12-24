@@ -60,9 +60,7 @@ class Crawler
 
     anchors.each do |a|
       path = a['href']
-      if is_not_relative(path) then
-        self.external_refs << path
-      else
+      unless invalid(path) then
         a[0] == '/' ? base.path = URI::encode(path) : base.path = "/#{URI::encode(path)}"
         self.state[base.to_s] = [base.to_s, ' ']
       end
