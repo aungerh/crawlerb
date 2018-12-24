@@ -9,3 +9,12 @@ def create_file(path, extension)
   path << ".#{extension}"
   File.new(path, 'w')
 end
+
+# urls that point out of the domain are not considered
+def is_not_relative(path)
+  path.nil? or
+  path.empty? or
+  path.include?('https') or
+  path.include?('http') or
+  path.include?('?')
+end

@@ -18,9 +18,6 @@ class Crawler
   attr_accessor :state
   attr_accessor :script
   attr_accessor :domain
-  attr_accessor :visited
-  attr_accessor :to_visit
-  attr_accessor :external_refs
   attr_accessor :contains_script
 
   class << self
@@ -48,9 +45,6 @@ class Crawler
     self.domain = Crawler.configuration.domain
     self.script = Crawler.configuration.script
     self.contains_script = []
-    self.external_refs = []
-    self.to_visit = []
-    self.visited = []
     self.state = {}
   end
 
@@ -77,14 +71,6 @@ class Crawler
 
   def has_script(doc)
     return doc.css('script').collect{|s| s.values[1]}.compact.include?(self.script)
-  end
-
-  def is_not_relative(path)
-    path.nil? or
-    path.empty? or
-    path.include?('https') or
-    path.include?('http') or
-    path.include?('?')
   end
 
   def expand_links
