@@ -1,7 +1,18 @@
-require_relative("mixins.rb")
-require_relative("config.rb")
+require_relative('constants')
 require_relative("crawler/crawler.rb")
 
-crwlr = Crawler.new()
+puts "domain to crawl:"
+domain = gets
 
-crwlr.start()
+puts "script name: (use default?: `#{@script_name_default}`) [Y/n]?"
+script = gets
+if script == 'Y' or 'y' then
+  script = "#{@script_name_default}"
+end
+
+Crawler.configure do |config|
+  config.domain = "#{domain.strip}"
+  config.script = "#{script.strip}"
+end
+
+Crawler.new().start()

@@ -1,0 +1,1 @@
+@script_name_default = "https://uberall.com/assets/storeFinderWidget-v2.js"
